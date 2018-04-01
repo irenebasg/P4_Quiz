@@ -85,7 +85,7 @@ exports.showCmd = (socket, rl, id) => {
         .then(id => models.quiz.findById(id))
         .then(quiz => {
             if (!quiz) {
-                throw new Error(`No esxiste un quiz asociado al id=${id}.`);
+                throw new Error(`No existe un quiz asociado al id=${id}.`);
             }
             log(socket, ` [${colorize(quiz.id, 'magenta')}]: ${quiz.question} ${colorize('=>', 'magenta')} ${quiz.answer}`);
         })
@@ -282,7 +282,7 @@ exports.testCmd = (socket, rl, id) => {
  * @param rl Objeto readline usado para implementar el CLI.
  */
 
-exports.playCmd = rl => {
+exports.playCmd = (socket, rl) => {
 
     let score=0; //Numero de aciertos
     let toBeResolved = []; //Array con el tamaño del numero de preguntas
@@ -317,13 +317,13 @@ exports.playCmd = rl => {
                     if (a.toLowerCase().trim() === quiz.answer.toLowerCase().trim()) {
                         //Mensaje de Respuesta
                         score++;
-                        socket.write(`CORRECTO - Lleva ${score} aciertos.`);
+                        log(socket, `CORRECTO - Lleva ${score} aciertos.`);
                         playOne();
                     }
                     else {
                         //Mensaje de Respuesta
                         //log('INCORRECTO');
-                        socket.write(`INCORRECTA. Fin del juego. Ha tenido ${score} aciertos:`);
+                        log(socket, `INCORRECTA. Fin del juego. Ha tenido ${score} aciertos:`);
                         //biglog(score, 'magenta');
                         rl.prompt();
 
